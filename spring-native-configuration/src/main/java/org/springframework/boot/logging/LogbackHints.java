@@ -17,8 +17,10 @@
 package org.springframework.boot.logging;
 
 import ch.qos.logback.classic.Level;
+import org.codehaus.janino.ScriptEvaluator;
 
 import org.springframework.aot.context.bootstrap.generator.infrastructure.nativex.NativeConfigurationRegistry;
+import org.springframework.aot.context.bootstrap.generator.infrastructure.nativex.NativeConfigurationRegistry.ReflectionConfiguration;
 import org.springframework.aot.context.bootstrap.generator.infrastructure.nativex.NativeResourcesEntry;
 import org.springframework.boot.logging.logback.ColorConverter;
 import org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter;
@@ -27,6 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.nativex.AotOptions;
 import org.springframework.nativex.hint.MethodHint;
 import org.springframework.nativex.hint.NativeHint;
+import org.springframework.nativex.hint.TypeAccess;
 import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
 import org.springframework.util.ClassUtils;
@@ -49,6 +52,17 @@ public class LogbackHints implements NativeConfiguration {
 		if (!aotOptions.isRemoveXmlSupport() &&
 				ClassUtils.isPresent("org.codehaus.janino.ScriptEvaluator", null) &&
 				ClassUtils.isPresent("ch.qos.logback.classic.Level", null)) {
+
+			ReflectionConfiguration reflection = registry.reflection();
+			reflection.forType(ScriptEvaluator.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS);
+			reflection.forType(ch.qos.logback.classic.encoder.PatternLayoutEncoder.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.ConsoleAppender.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.rolling.RollingFileAppender.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.rolling.FixedWindowRollingPolicy.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.rolling.TimeBasedRollingPolicy.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
+			reflection.forType(ch.qos.logback.core.util.FileSize.class).withAccess(TypeAccess.PUBLIC_CONSTRUCTORS, TypeAccess.PUBLIC_METHODS);
 
 			registry.resources()
 					.add(NativeResourcesEntry.of("org/springframework/boot/logging/logback/defaults.xml"))
