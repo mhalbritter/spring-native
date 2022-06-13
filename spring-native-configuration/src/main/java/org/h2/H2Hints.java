@@ -16,36 +16,14 @@
 
 package org.h2;
 
-import org.h2.store.fs.async.FilePathAsync;
-import org.h2.store.fs.disk.FilePathDisk;
-import org.h2.store.fs.mem.FilePathMem;
-import org.h2.store.fs.niomapped.FilePathNioMapped;
-import org.h2.store.fs.niomem.FilePathNioMem;
-import org.h2.store.fs.retry.FilePathRetryOnInterrupt;
-import org.h2.store.fs.split.FilePathSplit;
-import org.h2.store.fs.zip.FilePathZip;
-
 import org.springframework.nativex.hint.InitializationHint;
 import org.springframework.nativex.hint.InitializationTime;
 import org.springframework.nativex.hint.NativeHint;
-import org.springframework.nativex.hint.ResourceHint;
-import org.springframework.nativex.hint.TypeHint;
 import org.springframework.nativex.type.NativeConfiguration;
 
-@NativeHint(trigger = Driver.class, types =
-@TypeHint( types = {
-		FilePathDisk.class,
-		FilePathMem.class,
-		FilePathNioMem.class,
-		FilePathSplit.class,
-		FilePathNioMem.class,
-		FilePathNioMapped.class,
-		FilePathAsync.class,
-		FilePathZip.class,
-		FilePathRetryOnInterrupt.class
-}, typeNames= { "org.h2.store.fs.mem.FilePathMemLZF", "org.h2.store.fs.niomem.FilePathNioMemLZF" }),
-		initialization = @InitializationHint(types = org.h2.util.Bits.class, initTime = InitializationTime.BUILD),
-		resources = @ResourceHint(patterns = "org/h2/util/data.zip")
+@NativeHint(
+		trigger = Driver.class,
+		initialization = @InitializationHint(types = org.h2.util.Bits.class, initTime = InitializationTime.BUILD)
 )
 public class H2Hints implements NativeConfiguration {
 }
